@@ -1,0 +1,8 @@
+apiVersion: elasticloadbalancingv2.aws.crossplane.io/v1alpha1
+kind: TargetGroup
+metadata:
+  name: testtargetgroup
+spec:
+  forProvider:
+    name: foobartargetgroup
+    region: us-east-2

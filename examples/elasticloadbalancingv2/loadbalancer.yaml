@@ -1,0 +1,20 @@
+apiVersion: elasticloadbalancingv2.aws.crossplane.io/v1alpha1
+kind: LoadBalancer
+metadata:
+  name: test-loadbalancer
+spec:
+  forProvider:
+    type_: network
+    region: us-east-2
+    subnets:
+      - subnet-01d9037c6286fef91
+      - subnet-0afd64503c407e25d
+    tags:
+      - key: crossplane-provider-test
+        value: "yes"
+      - key: Environment
+        value: dev
+      - key: created_by
+        value: crossplane
+  providerConfigRef:
+    name: default
