@@ -130,8 +130,18 @@ services: $(GOIMPORTS)
 		$(OK) Generating $$svc controllers and CRDs; \
 	done
 
+services.clean:
+	@find ./pkg/controller/elasticloadbalancingv2 -name 'zz_*.go' -exec \
+		sed -i '' -E \
+		's/(aws-sdk-go\/service)\/elasticloadbalancingv2/\1\/elbv2/g' {} \; || $(FAIL)
+	@find ./pkg/controller/elasticloadbalancingv2 -name 'zz_*.go' -exec \
+		sed -i '' -E \
+		's/elasticloadbalancingv2iface/elbv2iface/g' {} \; || $(FAIL)
+	@$(OK) cleaned generated controllers
+
 services.all:
 	@$(MAKE) services SERVICES=$(GENERATED_SERVICES)
+	@$(MAKE) services.clean
 
 # ====================================================================================
 # Special Targets
