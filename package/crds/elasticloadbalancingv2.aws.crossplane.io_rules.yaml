@@ -277,11 +277,6 @@ spec:
                   listenerARN:
                     description: The Amazon Resource Name (ARN) of the listener.
                     type: string
-                  priority:
-                    description: The rule priority. A listener can't have multiple
-                      rules with the same priority.
-                    format: int64
-                    type: integer
                   region:
                     description: Region is which region the Rule will be created.
                     type: string
@@ -299,7 +294,6 @@ spec:
                 - actions
                 - conditions
                 - listenerARN
-                - priority
                 - region
                 type: object
               providerConfigRef:

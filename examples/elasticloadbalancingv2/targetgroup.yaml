@@ -5,4 +5,6 @@ metadata:
 spec:
   forProvider:
     name: foobartargetgroup
+    port: 80
+    protocol: TCP
     region: us-east-2

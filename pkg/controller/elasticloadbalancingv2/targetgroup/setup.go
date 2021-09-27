@@ -46,7 +46,11 @@ func SetupTargetGroup(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimit
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.TargetGroup, obj *svcsdk.DescribeTargetGroupsInput) error {
-	obj.TargetGroupArns = []*string{aws.String(meta.GetExternalName(cr))}
+	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
+		obj.Names = []*string{aws.String(meta.GetExternalName(cr))}
+	} else {
+		obj.TargetGroupArns = []*string{aws.String(meta.GetExternalName(cr))}
+	}
 	return nil
 }
 

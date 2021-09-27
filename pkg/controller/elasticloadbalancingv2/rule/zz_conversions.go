@@ -19,8 +19,6 @@ limitations under the License.
 package rule
 
 import (
-	"strconv"
-
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	svcsdk "github.com/aws/aws-sdk-go/service/elbv2"
 
@@ -318,15 +316,6 @@ func GenerateRule(resp *svcsdk.DescribeRulesOutput) *svcapitypes.Rule {
 		} else {
 			cr.Spec.ForProvider.Conditions = nil
 		}
-		if elem.Priority != nil {
-			priority, err := strconv.ParseInt(*elem.Priority, 10, 64)
-			if err != nil {
-				panic(err)
-			}
-			cr.Spec.ForProvider.Priority = &priority
-		} else {
-			cr.Spec.ForProvider.Priority = nil
-		}
 		found = true
 		break
 	}
@@ -610,22 +599,19 @@ func GenerateCreateRuleInput(cr *svcapitypes.Rule) *svcsdk.CreateRuleInput {
 	if cr.Spec.ForProvider.ListenerARN != nil {
 		res.SetListenerArn(*cr.Spec.ForProvider.ListenerARN)
 	}
-	if cr.Spec.ForProvider.Priority != nil {
-		res.SetPriority(*cr.Spec.ForProvider.Priority)
-	}
 	if cr.Spec.ForProvider.Tags != nil {
-		f4 := []*svcsdk.Tag{}
-		for _, f4iter := range cr.Spec.ForProvider.Tags {
-			f4elem := &svcsdk.Tag{}
-			if f4iter.Key != nil {
-				f4elem.SetKey(*f4iter.Key)
+		f3 := []*svcsdk.Tag{}
+		for _, f3iter := range cr.Spec.ForProvider.Tags {
+			f3elem := &svcsdk.Tag{}
+			if f3iter.Key != nil {
+				f3elem.SetKey(*f3iter.Key)
 			}
-			if f4iter.Value != nil {
-				f4elem.SetValue(*f4iter.Value)
+			if f3iter.Value != nil {
+				f3elem.SetValue(*f3iter.Value)
 			}
-			f4 = append(f4, f4elem)
+			f3 = append(f3, f3elem)
 		}
-		res.SetTags(f4)
+		res.SetTags(f3)
 	}
 
 	return res

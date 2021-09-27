@@ -38,9 +38,6 @@ type RuleParameters struct {
 	// The Amazon Resource Name (ARN) of the listener.
 	// +kubebuilder:validation:Required
 	ListenerARN *string `json:"listenerARN"`
-	// The rule priority. A listener can't have multiple rules with the same priority.
-	// +kubebuilder:validation:Required
-	Priority *int64 `json:"priority"`
 	// The tags to assign to the rule.
 	Tags                 []*Tag `json:"tags,omitempty"`
 	CustomRuleParameters `json:",inline"`

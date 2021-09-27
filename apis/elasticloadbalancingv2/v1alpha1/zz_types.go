@@ -288,8 +288,6 @@ type RuleCondition struct {
 }
 
 type RulePriorityPair struct {
-	Priority *int64 `json:"priority,omitempty"`
-
 	RuleARN *string `json:"ruleARN,omitempty"`
 }
 
