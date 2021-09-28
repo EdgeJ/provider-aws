@@ -36,6 +36,13 @@ type LoadBalancerParameters struct {
 	// possible values are ipv4 (for IPv4 addresses) and dualstack (for IPv4 and
 	// IPv6 addresses). Internal load balancers must use ipv4.
 	IPAddressType *string `json:"ipAddressType,omitempty"`
+	// The name of the load balancer.
+	//
+	// This name must be unique per region per account, can have a maximum of 32
+	// characters, must contain only alphanumeric characters or hyphens, must not
+	// begin or end with a hyphen, and must not begin with "internal-".
+	// +kubebuilder:validation:Required
+	Name *string `json:"name"`
 	// The nodes of an Internet-facing load balancer have public IP addresses. The
 	// DNS name of an Internet-facing load balancer is publicly resolvable to the
 	// public IP addresses of the nodes. Therefore, Internet-facing load balancers
@@ -92,9 +99,7 @@ type LoadBalancerParameters struct {
 	// Zones.
 	Subnets []*string `json:"subnets,omitempty"`
 	// The tags to assign to the load balancer.
-	Tags []*Tag `json:"tags,omitempty"`
-	// The type of load balancer. The default is application.
-	Type                         *string `json:"type_,omitempty"`
+	Tags                         []*Tag `json:"tags,omitempty"`
 	CustomLoadBalancerParameters `json:",inline"`
 }
 

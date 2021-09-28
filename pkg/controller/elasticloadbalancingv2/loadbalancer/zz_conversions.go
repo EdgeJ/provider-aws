@@ -68,11 +68,6 @@ func GenerateLoadBalancer(resp *svcsdk.DescribeLoadBalancersOutput) *svcapitypes
 		} else {
 			cr.Spec.ForProvider.SecurityGroups = nil
 		}
-		if elem.Type != nil {
-			cr.Spec.ForProvider.Type = elem.Type
-		} else {
-			cr.Spec.ForProvider.Type = nil
-		}
 		found = true
 		break
 	}
@@ -93,63 +88,63 @@ func GenerateCreateLoadBalancerInput(cr *svcapitypes.LoadBalancer) *svcsdk.Creat
 	if cr.Spec.ForProvider.IPAddressType != nil {
 		res.SetIpAddressType(*cr.Spec.ForProvider.IPAddressType)
 	}
+	if cr.Spec.ForProvider.Name != nil {
+		res.SetName(*cr.Spec.ForProvider.Name)
+	}
 	if cr.Spec.ForProvider.Scheme != nil {
 		res.SetScheme(*cr.Spec.ForProvider.Scheme)
 	}
 	if cr.Spec.ForProvider.SecurityGroups != nil {
-		f3 := []*string{}
-		for _, f3iter := range cr.Spec.ForProvider.SecurityGroups {
-			var f3elem string
-			f3elem = *f3iter
-			f3 = append(f3, &f3elem)
+		f4 := []*string{}
+		for _, f4iter := range cr.Spec.ForProvider.SecurityGroups {
+			var f4elem string
+			f4elem = *f4iter
+			f4 = append(f4, &f4elem)
 		}
-		res.SetSecurityGroups(f3)
+		res.SetSecurityGroups(f4)
 	}
 	if cr.Spec.ForProvider.SubnetMappings != nil {
-		f4 := []*svcsdk.SubnetMapping{}
-		for _, f4iter := range cr.Spec.ForProvider.SubnetMappings {
-			f4elem := &svcsdk.SubnetMapping{}
-			if f4iter.AllocationID != nil {
-				f4elem.SetAllocationId(*f4iter.AllocationID)
+		f5 := []*svcsdk.SubnetMapping{}
+		for _, f5iter := range cr.Spec.ForProvider.SubnetMappings {
+			f5elem := &svcsdk.SubnetMapping{}
+			if f5iter.AllocationID != nil {
+				f5elem.SetAllocationId(*f5iter.AllocationID)
 			}
-			if f4iter.IPv6Address != nil {
-				f4elem.SetIPv6Address(*f4iter.IPv6Address)
+			if f5iter.IPv6Address != nil {
+				f5elem.SetIPv6Address(*f5iter.IPv6Address)
 			}
-			if f4iter.PrivateIPv4Address != nil {
-				f4elem.SetPrivateIPv4Address(*f4iter.PrivateIPv4Address)
+			if f5iter.PrivateIPv4Address != nil {
+				f5elem.SetPrivateIPv4Address(*f5iter.PrivateIPv4Address)
 			}
-			if f4iter.SubnetID != nil {
-				f4elem.SetSubnetId(*f4iter.SubnetID)
+			if f5iter.SubnetID != nil {
+				f5elem.SetSubnetId(*f5iter.SubnetID)
 			}
-			f4 = append(f4, f4elem)
+			f5 = append(f5, f5elem)
 		}
-		res.SetSubnetMappings(f4)
+		res.SetSubnetMappings(f5)
 	}
 	if cr.Spec.ForProvider.Subnets != nil {
-		f5 := []*string{}
-		for _, f5iter := range cr.Spec.ForProvider.Subnets {
-			var f5elem string
-			f5elem = *f5iter
-			f5 = append(f5, &f5elem)
+		f6 := []*string{}
+		for _, f6iter := range cr.Spec.ForProvider.Subnets {
+			var f6elem string
+			f6elem = *f6iter
+			f6 = append(f6, &f6elem)
 		}
-		res.SetSubnets(f5)
+		res.SetSubnets(f6)
 	}
 	if cr.Spec.ForProvider.Tags != nil {
-		f6 := []*svcsdk.Tag{}
-		for _, f6iter := range cr.Spec.ForProvider.Tags {
-			f6elem := &svcsdk.Tag{}
-			if f6iter.Key != nil {
-				f6elem.SetKey(*f6iter.Key)
+		f7 := []*svcsdk.Tag{}
+		for _, f7iter := range cr.Spec.ForProvider.Tags {
+			f7elem := &svcsdk.Tag{}
+			if f7iter.Key != nil {
+				f7elem.SetKey(*f7iter.Key)
 			}
-			if f6iter.Value != nil {
-				f6elem.SetValue(*f6iter.Value)
+			if f7iter.Value != nil {
+				f7elem.SetValue(*f7iter.Value)
 			}
-			f6 = append(f6, f6elem)
+			f7 = append(f7, f7elem)
 		}
-		res.SetTags(f6)
-	}
-	if cr.Spec.ForProvider.Type != nil {
-		res.SetType(*cr.Spec.ForProvider.Type)
+		res.SetTags(f7)
 	}
 
 	return res
@@ -165,5 +160,5 @@ func GenerateDeleteLoadBalancerInput(cr *svcapitypes.LoadBalancer) *svcsdk.Delet
 // IsNotFound returns whether the given error is of type NotFound or not.
 func IsNotFound(err error) bool {
 	awsErr, ok := err.(awserr.Error)
-	return ok && awsErr.Code() == "UNKNOWN"
+	return ok && awsErr.Code() == "LoadBalancerNotFound"
 }

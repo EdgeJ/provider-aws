@@ -70,6 +70,15 @@ spec:
                       and dualstack (for IPv4 and IPv6 addresses). Internal load balancers
                       must use ipv4.
                     type: string
+                  loadBalancerType:
+                    description: The type of load balancer. The default is application.
+                    type: string
+                  name:
+                    description: "The name of the load balancer. \n This name must
+                      be unique per region per account, can have a maximum of 32 characters,
+                      must contain only alphanumeric characters or hyphens, must not
+                      begin or end with a hyphen, and must not begin with \"internal-\"."
+                    type: string
                   region:
                     description: Region is which region the LoadBalancer will be created.
                     type: string
@@ -147,10 +156,8 @@ spec:
                           type: string
                       type: object
                     type: array
-                  type_:
-                    description: The type of load balancer. The default is application.
-                    type: string
                 required:
+                - name
                 - region
                 type: object
               providerConfigRef:

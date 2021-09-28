@@ -4,7 +4,8 @@ metadata:
   name: test-loadbalancer
 spec:
   forProvider:
-    type_: network
+    name: testBalancer
+    loadBalancerType: network
     region: us-east-2
     subnets:
       - subnet-01d9037c6286fef91

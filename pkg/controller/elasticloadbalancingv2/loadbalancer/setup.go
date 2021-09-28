@@ -13,7 +13,6 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
-	"github.com/pkg/errors"
 	"k8s.io/client-go/util/workqueue"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -28,8 +27,7 @@ func SetupLoadBalancer(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimi
 		func(e *external) {
 			e.preObserve = preObserve
 			e.postObserve = postObserve
-			e.preCreate = preCreate
-			// e.postCreate = postCreate
+			e.postCreate = postCreate
 			e.preDelete = preDelete
 		},
 	}
@@ -48,31 +46,30 @@ func SetupLoadBalancer(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimi
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.LoadBalancer, obj *svcsdk.DescribeLoadBalancersInput) error {
-	obj.Names = []*string{aws.String(meta.GetExternalName(cr))}
+	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
+		obj.Names = []*string{aws.String(meta.GetExternalName(cr))}
+	} else {
+		obj.LoadBalancerArns = []*string{aws.String(meta.GetExternalName(cr))}
+	}
 	return nil
 }
 
-func postObserve(_ context.Context, cr *svcapitypes.LoadBalancer, _ *svcsdk.DescribeLoadBalancersOutput, obs managed.ExternalObservation, err error) (managed.ExternalObservation, error) {
+func postObserve(_ context.Context, cr *svcapitypes.LoadBalancer, resp *svcsdk.DescribeLoadBalancersOutput, obs managed.ExternalObservation, err error) (managed.ExternalObservation, error) {
 	if err != nil {
 		return managed.ExternalObservation{}, err
 	}
-	cr.SetConditions(xpv1.Available())
-	return obs, nil
-}
-
-func preCreate(_ context.Context, cr *svcapitypes.LoadBalancer, obj *svcsdk.CreateLoadBalancerInput) error {
-	if obj.Name == nil {
-		return errors.New("Loadbalancer Name parameter is empty!")
+	switch aws.StringValue(resp.LoadBalancers[0].State.Code) {
+	case string(svcapitypes.LoadBalancerStateEnum_active):
+		cr.SetConditions(xpv1.Available())
+	case string(svcapitypes.LoadBalancerStateEnum_provisioning):
+		cr.SetConditions(xpv1.Creating())
 	}
-	return nil
+	return obs, nil
 }
 
 func postCreate(_ context.Context, cr *svcapitypes.LoadBalancer, resp *svcsdk.CreateLoadBalancerOutput, cre managed.ExternalCreation, err error) (managed.ExternalCreation, error) {
 	if err != nil {
 		return managed.ExternalCreation{}, err
-	}
-	if len(resp.LoadBalancers) != 1 {
-		return managed.ExternalCreation{}, errors.New("Too many API objects returned")
 	}
 	meta.SetExternalName(cr, aws.StringValue(resp.LoadBalancers[0].LoadBalancerArn))
 	cre.ExternalNameAssigned = true
