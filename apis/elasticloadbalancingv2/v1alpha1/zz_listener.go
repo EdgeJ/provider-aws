@@ -52,9 +52,6 @@ type ListenerParameters struct {
 	// The actions for the default rule.
 	// +kubebuilder:validation:Required
 	DefaultActions []*Action `json:"defaultActions"`
-	// The Amazon Resource Name (ARN) of the load balancer.
-	// +kubebuilder:validation:Required
-	LoadBalancerARN *string `json:"loadBalancerARN"`
 	// The port on which the load balancer is listening. You cannot specify a port
 	// for a Gateway Load Balancer.
 	Port *int64 `json:"port,omitempty"`

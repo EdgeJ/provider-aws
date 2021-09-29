@@ -216,6 +216,29 @@ spec:
                   loadBalancerARN:
                     description: The Amazon Resource Name (ARN) of the load balancer.
                     type: string
+                  loadBalancerArnRef:
+                    description: Ref to loadbalancer ARN
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  loadBalancerArnSelector:
+                    description: Selector for references to LoadBalancer for LoadBalancerARN
+                    properties:
+                      matchControllerRef:
+                        description: MatchControllerRef ensures an object with the
+                          same controller reference as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                    type: object
                   port:
                     description: The port on which the load balancer is listening.
                       You cannot specify a port for a Gateway Load Balancer.
@@ -252,7 +275,6 @@ spec:
                     type: array
                 required:
                 - defaultActions
-                - loadBalancerARN
                 - region
                 type: object
               providerConfigRef:

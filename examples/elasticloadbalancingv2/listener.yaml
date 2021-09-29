@@ -1,0 +1,17 @@
+apiVersion: elasticloadbalancingv2.aws.crossplane.io/v1alpha1
+kind: Listener
+metadata:
+  name: test-listener
+spec:
+  forProvider:
+    region: us-east-2
+    defaultActions:
+      - type_: fixed-response
+        fixedResponseConfig:
+          statusCode: "200"
+    loadBalancerArnRef:
+      name: test-loadbalancer
+    port: 80
+    protocol: HTTP
+  providerConfigRef:
+    name: default

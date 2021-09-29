@@ -8,3 +8,4 @@ spec:
     port: 80
     protocol: TCP
     region: us-east-2
+    vpcID: vpc-04d3f65a9a60c2967

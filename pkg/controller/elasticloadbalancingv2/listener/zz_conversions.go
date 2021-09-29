@@ -33,10 +33,6 @@ import (
 func GenerateDescribeListenersInput(cr *svcapitypes.Listener) *svcsdk.DescribeListenersInput {
 	res := &svcsdk.DescribeListenersInput{}
 
-	if cr.Spec.ForProvider.LoadBalancerARN != nil {
-		res.SetLoadBalancerArn(*cr.Spec.ForProvider.LoadBalancerARN)
-	}
-
 	return res
 }
 
@@ -234,11 +230,6 @@ func GenerateListener(resp *svcsdk.DescribeListenersOutput) *svcapitypes.Listene
 			cr.Spec.ForProvider.DefaultActions = f2
 		} else {
 			cr.Spec.ForProvider.DefaultActions = nil
-		}
-		if elem.LoadBalancerArn != nil {
-			cr.Spec.ForProvider.LoadBalancerARN = elem.LoadBalancerArn
-		} else {
-			cr.Spec.ForProvider.LoadBalancerARN = nil
 		}
 		if elem.Port != nil {
 			cr.Spec.ForProvider.Port = elem.Port
@@ -452,9 +443,6 @@ func GenerateCreateListenerInput(cr *svcapitypes.Listener) *svcsdk.CreateListene
 		}
 		res.SetDefaultActions(f2)
 	}
-	if cr.Spec.ForProvider.LoadBalancerARN != nil {
-		res.SetLoadBalancerArn(*cr.Spec.ForProvider.LoadBalancerARN)
-	}
 	if cr.Spec.ForProvider.Port != nil {
 		res.SetPort(*cr.Spec.ForProvider.Port)
 	}
@@ -465,18 +453,18 @@ func GenerateCreateListenerInput(cr *svcapitypes.Listener) *svcsdk.CreateListene
 		res.SetSslPolicy(*cr.Spec.ForProvider.SSLPolicy)
 	}
 	if cr.Spec.ForProvider.Tags != nil {
-		f7 := []*svcsdk.Tag{}
-		for _, f7iter := range cr.Spec.ForProvider.Tags {
-			f7elem := &svcsdk.Tag{}
-			if f7iter.Key != nil {
-				f7elem.SetKey(*f7iter.Key)
+		f6 := []*svcsdk.Tag{}
+		for _, f6iter := range cr.Spec.ForProvider.Tags {
+			f6elem := &svcsdk.Tag{}
+			if f6iter.Key != nil {
+				f6elem.SetKey(*f6iter.Key)
 			}
-			if f7iter.Value != nil {
-				f7elem.SetValue(*f7iter.Value)
+			if f6iter.Value != nil {
+				f6elem.SetValue(*f6iter.Value)
 			}
-			f7 = append(f7, f7elem)
+			f6 = append(f6, f6elem)
 		}
-		res.SetTags(f7)
+		res.SetTags(f6)
 	}
 
 	return res
@@ -692,5 +680,5 @@ func GenerateDeleteListenerInput(cr *svcapitypes.Listener) *svcsdk.DeleteListene
 // IsNotFound returns whether the given error is of type NotFound or not.
 func IsNotFound(err error) bool {
 	awsErr, ok := err.(awserr.Error)
-	return ok && awsErr.Code() == "UNKNOWN"
+	return ok && awsErr.Code() == "ListenerNotFound"
 }
