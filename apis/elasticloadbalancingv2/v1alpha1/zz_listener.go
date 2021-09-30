@@ -49,9 +49,6 @@ type ListenerParameters struct {
 	// provide exactly one certificate. Set CertificateArn to the certificate ARN
 	// but do not set IsDefault.
 	Certificates []*Certificate `json:"certificates,omitempty"`
-	// The actions for the default rule.
-	// +kubebuilder:validation:Required
-	DefaultActions []*Action `json:"defaultActions"`
 	// The port on which the load balancer is listening. You cannot specify a port
 	// for a Gateway Load Balancer.
 	Port *int64 `json:"port,omitempty"`

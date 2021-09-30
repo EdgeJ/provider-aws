@@ -6,10 +6,12 @@ spec:
   forProvider:
     region: us-east-2
     defaultActions:
-      - type_: fixed-response
-        fixedResponseConfig:
-          statusCode: "200"
-    loadBalancerArnRef:
+      - actionType: forward
+        forwardConfig:
+          targetGroups:
+            - targetGroupARNRef:
+                name: testtargetgroup
+    loadBalancerARNRef:
       name: test-loadbalancer
     port: 80
     protocol: HTTP

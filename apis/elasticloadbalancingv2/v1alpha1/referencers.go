@@ -15,6 +15,7 @@ package v1alpha1
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/crossplane/crossplane-runtime/pkg/reference"
 	"github.com/pkg/errors"
@@ -24,6 +25,7 @@ import (
 func (mg *Listener) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
 
+	// resolve loadbalancer ARN reference
 	rsp, err := r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.LoadBalancerARN),
 		Reference:    mg.Spec.ForProvider.LoadBalancerARNRef,
@@ -36,6 +38,43 @@ func (mg *Listener) ResolveReferences(ctx context.Context, c client.Reader) erro
 	}
 	mg.Spec.ForProvider.LoadBalancerARN = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.LoadBalancerARNRef = rsp.ResolvedReference
+
+	for i := range mg.Spec.ForProvider.DefaultActions {
+		// resolve single target group ARN references for each default action
+		rsp, err := r.Resolve(ctx, reference.ResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.DefaultActions[i].TargetGroupARN),
+			Reference:    mg.Spec.ForProvider.DefaultActions[i].TargetGroupARNRef,
+			Selector:     mg.Spec.ForProvider.DefaultActions[i].TargetGroupARNSelector,
+			To:           reference.To{Managed: &TargetGroup{}, List: &TargetGroupList{}},
+			Extract:      reference.ExternalName(),
+		})
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("spec.forProvider.DefaultActions[%d].targetGroupArn", i))
+		}
+
+		mg.Spec.ForProvider.DefaultActions[i].TargetGroupARN = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.DefaultActions[i].TargetGroupARNRef = rsp.ResolvedReference
+
+		// resolve target group ARN references in forwardconfig if there are any
+		if mg.Spec.ForProvider.DefaultActions[i].ForwardConfig != nil {
+			for j := range mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups {
+				rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+					CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups[j].TargetGroupARN),
+					Reference:    mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups[j].TargetGroupARNRef,
+					Selector:     mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups[j].TargetGroupARNSelector,
+					To:           reference.To{Managed: &TargetGroup{}, List: &TargetGroupList{}},
+					Extract:      reference.ExternalName(),
+				})
+				if err != nil {
+					return errors.Wrap(err, fmt.Sprintf("spec.forProvider.DefaultActions[%d].forwardConfig.targetGroups[%d]", i, j))
+				}
+
+				mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups[j].TargetGroupARN = reference.ToPtrValue(rsp.ResolvedValue)
+				mg.Spec.ForProvider.DefaultActions[i].ForwardConfig.TargetGroups[j].TargetGroupARNRef = rsp.ResolvedReference
+			}
+		}
+	}
+
 	return nil
 }
 

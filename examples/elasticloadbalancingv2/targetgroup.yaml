@@ -6,6 +6,6 @@ spec:
   forProvider:
     name: foobartargetgroup
     port: 80
-    protocol: TCP
+    protocol: HTTP
     region: us-east-2
     vpcID: vpc-04d3f65a9a60c2967
