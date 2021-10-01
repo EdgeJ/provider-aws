@@ -18,4 +18,4 @@ spec:
       - key: created_by
         value: crossplane
   providerConfigRef:
-    name: default
+    name: example

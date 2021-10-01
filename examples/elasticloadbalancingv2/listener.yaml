@@ -16,4 +16,4 @@ spec:
     port: 80
     protocol: HTTP
   providerConfigRef:
-    name: default
+    name: example

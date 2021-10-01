@@ -9,3 +9,5 @@ spec:
     protocol: HTTP
     region: us-east-2
     vpcID: vpc-04d3f65a9a60c2967
+  providerConfigRef:
+    name: example
