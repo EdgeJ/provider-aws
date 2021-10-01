@@ -132,62 +132,6 @@ func (mg *LoadBalancer) SetWriteConnectionSecretToReference(r *xpv1.SecretRefere
 	mg.Spec.WriteConnectionSecretToReference = r
 }
 
-// GetCondition of this Rule.
-func (mg *Rule) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
-	return mg.Status.GetCondition(ct)
-}
-
-// GetDeletionPolicy of this Rule.
-func (mg *Rule) GetDeletionPolicy() xpv1.DeletionPolicy {
-	return mg.Spec.DeletionPolicy
-}
-
-// GetProviderConfigReference of this Rule.
-func (mg *Rule) GetProviderConfigReference() *xpv1.Reference {
-	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this Rule.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *Rule) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
-}
-
-// GetWriteConnectionSecretToReference of this Rule.
-func (mg *Rule) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
-	return mg.Spec.WriteConnectionSecretToReference
-}
-
-// SetConditions of this Rule.
-func (mg *Rule) SetConditions(c ...xpv1.Condition) {
-	mg.Status.SetConditions(c...)
-}
-
-// SetDeletionPolicy of this Rule.
-func (mg *Rule) SetDeletionPolicy(r xpv1.DeletionPolicy) {
-	mg.Spec.DeletionPolicy = r
-}
-
-// SetProviderConfigReference of this Rule.
-func (mg *Rule) SetProviderConfigReference(r *xpv1.Reference) {
-	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this Rule.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *Rule) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
-}
-
-// SetWriteConnectionSecretToReference of this Rule.
-func (mg *Rule) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
-	mg.Spec.WriteConnectionSecretToReference = r
-}
-
 // GetCondition of this TargetGroup.
 func (mg *TargetGroup) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
 	return mg.Status.GetCondition(ct)

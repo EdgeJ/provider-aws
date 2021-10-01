@@ -82,10 +82,6 @@ func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) 
 	return nil
 }
 
-func (mg *Rule) ResolveReferences(ctx context.Context, c client.Reader) error {
-	return nil
-}
-
 func (mg *TargetGroup) ResolveReferences(ctx context.Context, c client.Reader) error {
 	return nil
 }

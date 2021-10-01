@@ -143,20 +143,6 @@ type ForwardActionConfig struct {
 	TargetGroups []*TargetGroupTuple `json:"targetGroups,omitempty"`
 }
 
-type HTTPHeaderConditionConfig struct {
-	HTTPHeaderName *string `json:"httpHeaderName,omitempty"`
-
-	Values []*string `json:"values,omitempty"`
-}
-
-type HTTPRequestMethodConditionConfig struct {
-	Values []*string `json:"values,omitempty"`
-}
-
-type HostHeaderConditionConfig struct {
-	Values []*string `json:"values,omitempty"`
-}
-
 type Listener_SDK struct {
 	AlpnPolicy []*string `json:"alpnPolicy,omitempty"`
 
@@ -225,20 +211,6 @@ type Matcher struct {
 	HTTPCode *string `json:"httpCode,omitempty"`
 }
 
-type PathPatternConditionConfig struct {
-	Values []*string `json:"values,omitempty"`
-}
-
-type QueryStringConditionConfig struct {
-	Values []*QueryStringKeyValuePair `json:"values,omitempty"`
-}
-
-type QueryStringKeyValuePair struct {
-	Key *string `json:"key,omitempty"`
-
-	Value *string `json:"value,omitempty"`
-}
-
 type RedirectActionConfig struct {
 	Host *string `json:"host,omitempty"`
 
@@ -253,62 +225,12 @@ type RedirectActionConfig struct {
 	StatusCode *string `json:"statusCode,omitempty"`
 }
 
-type RuleCondition struct {
-	Field *string `json:"field,omitempty"`
-	// Information about a host header condition.
-	HostHeaderConfig *HostHeaderConditionConfig `json:"hostHeaderConfig,omitempty"`
-	// Information about an HTTP header condition.
-	//
-	// There is a set of standard HTTP header fields. You can also define custom
-	// HTTP header fields.
-	HTTPHeaderConfig *HTTPHeaderConditionConfig `json:"httpHeaderConfig,omitempty"`
-	// Information about an HTTP method condition.
-	//
-	// HTTP defines a set of request methods, also referred to as HTTP verbs. For
-	// more information, see the HTTP Method Registry (https://www.iana.org/assignments/http-methods/http-methods.xhtml).
-	// You can also define custom HTTP methods.
-	HTTPRequestMethodConfig *HTTPRequestMethodConditionConfig `json:"httpRequestMethodConfig,omitempty"`
-	// Information about a path pattern condition.
-	PathPatternConfig *PathPatternConditionConfig `json:"pathPatternConfig,omitempty"`
-	// Information about a query string condition.
-	//
-	// The query string component of a URI starts after the first '?' character
-	// and is terminated by either a '#' character or the end of the URI. A typical
-	// query string contains key/value pairs separated by '&' characters. The allowed
-	// characters are specified by RFC 3986. Any character can be percentage encoded.
-	QueryStringConfig *QueryStringConditionConfig `json:"queryStringConfig,omitempty"`
-	// Information about a source IP condition.
-	//
-	// You can use this condition to route based on the IP address of the source
-	// that connects to the load balancer. If a client is behind a proxy, this is
-	// the IP address of the proxy not the IP address of the client.
-	SourceIPConfig *SourceIPConditionConfig `json:"sourceIPConfig,omitempty"`
-
-	Values []*string `json:"values,omitempty"`
-}
-
-type RulePriorityPair struct {
-	RuleARN *string `json:"ruleARN,omitempty"`
-}
-
-type Rule_SDK struct {
+type Rule struct {
 	Actions []*Action `json:"actions,omitempty"`
-
-	Conditions []*RuleCondition `json:"conditions,omitempty"`
-
-	IsDefault *bool `json:"isDefault,omitempty"`
-
-	Priority *string `json:"priority,omitempty"`
-
-	RuleARN *string `json:"ruleARN,omitempty"`
 }
 
 type SSLPolicy struct {
 	Name *string `json:"name,omitempty"`
-}
-
-type SourceIPConditionConfig struct {
-	Values []*string `json:"values,omitempty"`
 }
 
 type SubnetMapping struct {

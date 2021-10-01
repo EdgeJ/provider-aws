@@ -2,9 +2,6 @@ package v1alpha1
 
 import xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 
-// CustomRuleParameters includes the custom fields of Rule.
-type CustomRuleParameters struct{}
-
 type CustomTargetGroupTuple struct { // inject refs and selectors into TargetGroupTuple
 	TargetGroupTuple `json:",inline"`
 

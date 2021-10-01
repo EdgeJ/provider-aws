@@ -75,7 +75,6 @@ import (
 	"github.com/crossplane/provider-aws/pkg/controller/elasticloadbalancing/elbattachment"
 	"github.com/crossplane/provider-aws/pkg/controller/elasticloadbalancingv2/listener"
 	"github.com/crossplane/provider-aws/pkg/controller/elasticloadbalancingv2/loadbalancer"
-	"github.com/crossplane/provider-aws/pkg/controller/elasticloadbalancingv2/rule"
 	"github.com/crossplane/provider-aws/pkg/controller/elasticloadbalancingv2/targetgroup"
 	"github.com/crossplane/provider-aws/pkg/controller/identity/iamaccesskey"
 	"github.com/crossplane/provider-aws/pkg/controller/identity/iamgroup"
@@ -205,7 +204,6 @@ func Setup(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimiter, poll ti
 		instance.SetupInstance,
 		listener.SetupListener,
 		loadbalancer.SetupLoadBalancer,
-		rule.SetupRule,
 		targetgroup.SetupTargetGroup,
 	} {
 		if err := setup(mgr, l, rl, poll); err != nil {
