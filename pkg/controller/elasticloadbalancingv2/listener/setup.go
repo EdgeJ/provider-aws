@@ -47,6 +47,9 @@ func SetupListener(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimiter,
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.Listener, obj *svcsdk.DescribeListenersInput) error {
+	// Until the listener ARN is set after creation, we can't use it for
+	// searching. Instead use the loadbalancer ARN to allow the API call to
+	// pass and handle the false positive in postObserve.
 	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
 		obj.LoadBalancerArn = cr.Spec.ForProvider.LoadBalancerARN
 	} else {
@@ -58,6 +61,14 @@ func preObserve(_ context.Context, cr *svcapitypes.Listener, obj *svcsdk.Describ
 func postObserve(_ context.Context, cr *svcapitypes.Listener, _ *svcsdk.DescribeListenersOutput, obs managed.ExternalObservation, err error) (managed.ExternalObservation, error) {
 	if err != nil {
 		return managed.ExternalObservation{}, err
+	}
+	// if the external-name is still set to the object name, we haven't
+	// actually created the resource. This helps get around the fact that we
+	// don't yet have a valid ARN to search with until we have created the
+	// resource itself.
+	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
+		obs.ResourceExists = false
+		return obs, nil
 	}
 	cr.SetConditions(xpv1.Available())
 	return obs, nil

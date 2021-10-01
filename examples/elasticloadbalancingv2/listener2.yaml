@@ -1,0 +1,19 @@
+apiVersion: elasticloadbalancingv2.aws.crossplane.io/v1alpha1
+kind: Listener
+metadata:
+  name: test-listener-two
+spec:
+  forProvider:
+    region: us-east-2
+    defaultActions:
+      - actionType: forward
+        forwardConfig:
+          targetGroups:
+            - targetGroupARNRef:
+                name: testtargetgroup
+    loadBalancerARNRef:
+      name: test-loadbalancer
+    port: 8080
+    protocol: HTTP
+  providerConfigRef:
+    name: example
