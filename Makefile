@@ -130,18 +130,19 @@ services: $(GOIMPORTS)
 		$(OK) Generating $$svc controllers and CRDs; \
 	done
 
-services.clean:
+# slightly hacky way to get around naming inconsistencies in elbv2 APIs
+elbv2rename:
 	@find ./pkg/controller/elasticloadbalancingv2 -name 'zz_*.go' -exec \
 		sed -i '' -E \
 		's/(aws-sdk-go\/service)\/elasticloadbalancingv2/\1\/elbv2/g' {} \; || $(FAIL)
 	@find ./pkg/controller/elasticloadbalancingv2 -name 'zz_*.go' -exec \
 		sed -i '' -E \
 		's/elasticloadbalancingv2iface/elbv2iface/g' {} \; || $(FAIL)
-	@$(OK) cleaned generated controllers
+	@$(OK) Renamed elbv2 controllers
 
 services.all:
 	@$(MAKE) services SERVICES=$(GENERATED_SERVICES)
-	@$(MAKE) services.clean
+	@$(MAKE) elbv2rename
 
 # ====================================================================================
 # Special Targets
