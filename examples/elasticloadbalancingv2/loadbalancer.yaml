@@ -7,8 +7,8 @@ spec:
     name: testBalancer
     loadBalancerType: application
     region: us-east-1
-    subnets:
-      - subnet-00fcea93939e57ab7
-      - subnet-0dedec51703735309
+    subnetsRef:
+      - name: sample-subnet1
+      - name: sample-subnet2
   providerConfigRef:
     name: example

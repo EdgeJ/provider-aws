@@ -80,6 +80,23 @@ func (mg *Listener) ResolveReferences(ctx context.Context, c client.Reader) erro
 }
 
 func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	// resolve subnets references
+	mrsp, err := r.ResolveMultiple(ctx, reference.MultiResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.Subnets),
+		References:    mg.Spec.ForProvider.SubnetsRef,
+		Selector:      mg.Spec.ForProvider.SubnetSelector,
+		To:            reference.To{Managed: &ec2.Subnet{}, List: &ec2.SubnetList{}},
+		Extract:       reference.ExternalName(),
+	})
+	if err != nil {
+		return errors.Wrap(err, "spec.ForProvider.subnets")
+	}
+
+	mg.Spec.ForProvider.Subnets = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.ForProvider.SubnetsRef = mrsp.ResolvedReferences
+
 	return nil
 }
 

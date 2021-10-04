@@ -97,6 +97,14 @@ type CustomListenerParameters struct {
 type CustomLoadBalancerParameters struct {
 	// The type of load balancer. The default is application.
 	Type *string `json:"loadBalancerType,omitempty"`
+
+	// Reference to Subnets for Subnets field
+	// +optional
+	SubnetsRef []xpv1.Reference `json:"subnetsRef,omitempty"`
+
+	// Selector for references to Subnets
+	// +optional
+	SubnetSelector *xpv1.Selector `json:"subnetSelector,omitempty"`
 }
 
 // CustomTargetGroupParameters includes the custom fields of TargetGroup.
