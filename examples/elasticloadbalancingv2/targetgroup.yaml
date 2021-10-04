@@ -1,13 +1,14 @@
 apiVersion: elasticloadbalancingv2.aws.crossplane.io/v1alpha1
 kind: TargetGroup
 metadata:
-  name: testtargetgroup
+  name: test-targetgroup
 spec:
   forProvider:
-    name: foobartargetgroup
+    name: test-targetgroup
     port: 80
     protocol: HTTP
-    region: us-east-2
-    vpcID: vpc-04d3f65a9a60c2967
+    region: us-east-1
+    vpcIDRef:
+      name: sample-vpc
   providerConfigRef:
     name: example

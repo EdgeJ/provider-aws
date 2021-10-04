@@ -100,4 +100,12 @@ type CustomLoadBalancerParameters struct {
 }
 
 // CustomTargetGroupParameters includes the custom fields of TargetGroup.
-type CustomTargetGroupParameters struct{}
+type CustomTargetGroupParameters struct {
+	// Reference to VPC for VPCID
+	// +optional
+	VPCIDRef *xpv1.Reference `json:"vpcIDRef,omitempty"`
+
+	// Selector for references to VPC for VPCID
+	// +optional
+	VPCIDSelector *xpv1.Selector `json:"vpcIDSelector,omitempty"`
+}

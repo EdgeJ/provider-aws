@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/crossplane/crossplane-runtime/pkg/reference"
+	ec2 "github.com/crossplane/provider-aws/apis/ec2/v1beta1"
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -83,5 +84,20 @@ func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) 
 }
 
 func (mg *TargetGroup) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	// resolve vpc ID reference
+	rsp, err := r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.VPCID),
+		Reference:    mg.Spec.ForProvider.VPCIDRef,
+		Selector:     mg.Spec.ForProvider.VPCIDSelector,
+		To:           reference.To{Managed: &ec2.VPC{}, List: &ec2.VPCList{}},
+		Extract:      reference.ExternalName(),
+	})
+	if err != nil {
+		return errors.Wrap(err, "spec.forProvider.loadBalancerArn")
+	}
+	mg.Spec.ForProvider.VPCID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.VPCIDRef = rsp.ResolvedReference
 	return nil
 }

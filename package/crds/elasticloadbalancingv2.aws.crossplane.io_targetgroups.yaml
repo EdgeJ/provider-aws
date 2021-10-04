@@ -194,6 +194,29 @@ spec:
                       If the target is a Lambda function, this parameter does not
                       apply. Otherwise, this parameter is required.
                     type: string
+                  vpcIDRef:
+                    description: Reference to VPC for VPCID
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  vpcIDSelector:
+                    description: Selector for references to VPC for VPCID
+                    properties:
+                      matchControllerRef:
+                        description: MatchControllerRef ensures an object with the
+                          same controller reference as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                    type: object
                 required:
                 - name
                 - region
