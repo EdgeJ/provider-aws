@@ -97,6 +97,21 @@ func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) 
 	mg.Spec.ForProvider.Subnets = reference.ToPtrValues(mrsp.ResolvedValues)
 	mg.Spec.ForProvider.SubnetsRef = mrsp.ResolvedReferences
 
+	// resolve SecurityGroups references
+	mrsp, err = r.ResolveMultiple(ctx, reference.MultiResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.SecurityGroups),
+		References:    mg.Spec.ForProvider.SecurityGroupsRef,
+		Selector:      mg.Spec.ForProvider.SecurityGroupSelector,
+		To:            reference.To{Managed: &ec2.SecurityGroup{}, List: &ec2.SecurityGroupList{}},
+		Extract:       reference.ExternalName(),
+	})
+	if err != nil {
+		return errors.Wrap(err, "spec.ForProvider.SecurityGroups")
+	}
+
+	mg.Spec.ForProvider.SecurityGroups = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.ForProvider.SecurityGroupsRef = mrsp.ResolvedReferences
+
 	return nil
 }
 

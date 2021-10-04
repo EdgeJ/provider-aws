@@ -441,6 +441,16 @@ func (in *CustomLoadBalancerParameters) DeepCopyInto(out *CustomLoadBalancerPara
 		*out = new(string)
 		**out = **in
 	}
+	if in.SecurityGroupsRef != nil {
+		in, out := &in.SecurityGroupsRef, &out.SecurityGroupsRef
+		*out = make([]v1.Reference, len(*in))
+		copy(*out, *in)
+	}
+	if in.SecurityGroupSelector != nil {
+		in, out := &in.SecurityGroupSelector, &out.SecurityGroupSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.SubnetsRef != nil {
 		in, out := &in.SubnetsRef, &out.SubnetsRef
 		*out = make([]v1.Reference, len(*in))

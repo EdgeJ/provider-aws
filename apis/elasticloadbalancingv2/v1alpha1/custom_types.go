@@ -98,6 +98,14 @@ type CustomLoadBalancerParameters struct {
 	// The type of load balancer. The default is application.
 	Type *string `json:"loadBalancerType,omitempty"`
 
+	// Reference to Security Groups for SecurityGroups field
+	// +optional
+	SecurityGroupsRef []xpv1.Reference `json:"securityGroupsRef,omitempty"`
+
+	// Selector for references to SecurityGroups
+	// +optional
+	SecurityGroupSelector *xpv1.Selector `json:"securityGroupSelector,omitempty"`
+
 	// Reference to Subnets for Subnets field
 	// +optional
 	SubnetsRef []xpv1.Reference `json:"subnetsRef,omitempty"`
