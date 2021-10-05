@@ -74,7 +74,7 @@ func postObserve(_ context.Context, cr *svcapitypes.Listener, _ *svcsdk.Describe
 	return obs, nil
 }
 
-func generateCreateListenerInputDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action {
+func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action {
 	actions := []*svcsdk.Action{}
 	if cr.Spec.ForProvider.DefaultActions == nil {
 		return actions
@@ -240,8 +240,8 @@ func generateCreateListenerInputDefaultActions(cr *svcapitypes.Listener) []*svcs
 }
 
 func preCreate(_ context.Context, cr *svcapitypes.Listener, obs *svcsdk.CreateListenerInput) error {
-	dactions := generateCreateListenerInputDefaultActions(cr)
-	obs.DefaultActions = dactions
+	dActions := generateDefaultActions(cr)
+	obs.DefaultActions = dActions
 	obs.LoadBalancerArn = cr.Spec.ForProvider.LoadBalancerARN
 	return nil
 }
