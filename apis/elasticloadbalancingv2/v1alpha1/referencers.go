@@ -18,11 +18,13 @@ import (
 	"fmt"
 
 	"github.com/crossplane/crossplane-runtime/pkg/reference"
-	ec2 "github.com/crossplane/provider-aws/apis/ec2/v1beta1"
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	ec2 "github.com/crossplane/provider-aws/apis/ec2/v1beta1"
 )
 
+// ResolveReferences resolves references for Listeners
 func (mg *Listener) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
 
@@ -79,6 +81,7 @@ func (mg *Listener) ResolveReferences(ctx context.Context, c client.Reader) erro
 	return nil
 }
 
+// ResolveReferences resolves references for LoadBalancers
 func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
 
@@ -115,6 +118,7 @@ func (mg *LoadBalancer) ResolveReferences(ctx context.Context, c client.Reader) 
 	return nil
 }
 
+// ResolveReferences resolves references for TargetGroups
 func (mg *TargetGroup) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)
 

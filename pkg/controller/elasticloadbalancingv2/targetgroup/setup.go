@@ -16,6 +16,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 
 	svcsdk "github.com/aws/aws-sdk-go/service/elbv2"
+
 	svcapitypes "github.com/crossplane/provider-aws/apis/elasticloadbalancingv2/v1alpha1"
 	aws "github.com/crossplane/provider-aws/pkg/clients"
 )
@@ -34,7 +35,7 @@ func SetupTargetGroup(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimit
 	return ctrl.NewControllerManagedBy(mgr).
 		Named(name).
 		WithOptions(controller.Options{
-			RateLimiter: ratelimiter.NewDefaultManagedRateLimiter(rl),
+			RateLimiter: ratelimiter.NewController(rl),
 		}).
 		For(&svcapitypes.TargetGroup{}).
 		Complete(managed.NewReconciler(mgr,
@@ -67,7 +68,6 @@ func postCreate(_ context.Context, cr *svcapitypes.TargetGroup, resp *svcsdk.Cre
 		return managed.ExternalCreation{}, err
 	}
 	meta.SetExternalName(cr, aws.StringValue(resp.TargetGroups[0].TargetGroupArn))
-	cre.ExternalNameAssigned = true
 	return cre, nil
 }
 

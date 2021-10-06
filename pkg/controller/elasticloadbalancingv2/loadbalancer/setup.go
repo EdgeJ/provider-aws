@@ -34,7 +34,7 @@ func SetupLoadBalancer(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimi
 	return ctrl.NewControllerManagedBy(mgr).
 		Named(name).
 		WithOptions(controller.Options{
-			RateLimiter: ratelimiter.NewDefaultManagedRateLimiter(rl),
+			RateLimiter: ratelimiter.NewController(rl),
 		}).
 		For(&svcapitypes.LoadBalancer{}).
 		Complete(managed.NewReconciler(mgr,
@@ -72,7 +72,6 @@ func postCreate(_ context.Context, cr *svcapitypes.LoadBalancer, resp *svcsdk.Cr
 		return managed.ExternalCreation{}, err
 	}
 	meta.SetExternalName(cr, aws.StringValue(resp.LoadBalancers[0].LoadBalancerArn))
-	cre.ExternalNameAssigned = true
 	return cre, nil
 }
 

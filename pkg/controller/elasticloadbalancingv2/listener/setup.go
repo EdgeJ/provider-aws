@@ -35,7 +35,7 @@ func SetupListener(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimiter,
 	return ctrl.NewControllerManagedBy(mgr).
 		Named(name).
 		WithOptions(controller.Options{
-			RateLimiter: ratelimiter.NewDefaultManagedRateLimiter(rl),
+			RateLimiter: ratelimiter.NewController(rl),
 		}).
 		For(&svcapitypes.Listener{}).
 		Complete(managed.NewReconciler(mgr,
@@ -74,7 +74,7 @@ func postObserve(_ context.Context, cr *svcapitypes.Listener, _ *svcsdk.Describe
 	return obs, nil
 }
 
-func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action {
+func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action { //nolint:gocyclo // This func is long by necessity of needing to recursively copy all values from the API type into the SDK type
 	actions := []*svcsdk.Action{}
 	if cr.Spec.ForProvider.DefaultActions == nil {
 		return actions
@@ -87,8 +87,7 @@ func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action {
 			if actionsiter.AuthenticateCognitoConfig.AuthenticationRequestExtraParams != nil {
 				actionselemf0f0 := map[string]*string{}
 				for actionselemf0f0key, actionselemf0f0valiter := range actionsiter.AuthenticateCognitoConfig.AuthenticationRequestExtraParams {
-					var actionselemf0f0val string
-					actionselemf0f0val = *actionselemf0f0valiter
+					actionselemf0f0val := *actionselemf0f0valiter
 					actionselemf0f0[actionselemf0f0key] = &actionselemf0f0val
 				}
 				actionselemf0.SetAuthenticationRequestExtraParams(actionselemf0f0)
@@ -121,8 +120,7 @@ func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action {
 			if actionsiter.AuthenticateOidcConfig.AuthenticationRequestExtraParams != nil {
 				actionselemf1f0 := map[string]*string{}
 				for actionselemf1f0key, actionselemf1f0valiter := range actionsiter.AuthenticateOidcConfig.AuthenticationRequestExtraParams {
-					var actionselemf1f0val string
-					actionselemf1f0val = *actionselemf1f0valiter
+					actionselemf1f0val := *actionselemf1f0valiter
 					actionselemf1f0[actionselemf1f0key] = &actionselemf1f0val
 				}
 				actionselemf1.SetAuthenticationRequestExtraParams(actionselemf1f0)
@@ -251,7 +249,6 @@ func postCreate(_ context.Context, cr *svcapitypes.Listener, resp *svcsdk.Create
 		return managed.ExternalCreation{}, err
 	}
 	meta.SetExternalName(cr, aws.StringValue(resp.Listeners[0].ListenerArn))
-	cre.ExternalNameAssigned = true
 	return cre, nil
 }
 

@@ -2,7 +2,11 @@ package v1alpha1
 
 import xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 
+// CustomTargetGroupTuple includes custom fields about target groups.
+// Only used with ForwardActionConfig to route to multiple target groups.
 type CustomTargetGroupTuple struct { // inject refs and selectors into TargetGroupTuple
+	// Provides information about how traffic will be
+	// distributed between multiple target groups in a forward rule.
 	TargetGroupTuple `json:",inline"`
 
 	// Reference to TargetGroupARN used to set TargetGroupARN
@@ -14,13 +18,20 @@ type CustomTargetGroupTuple struct { // inject refs and selectors into TargetGro
 	TargetGroupARNSelector *xpv1.Selector `json:"targetGroupARNSelector,omitempty"`
 }
 
+// CustomForwardActionConfig includes custom fields about a forward action.
 type CustomForwardActionConfig struct {
 	// Information about the target group stickiness for a rule.
 	TargetGroupStickinessConfig *TargetGroupStickinessConfig `json:"targetGroupStickinessConfig,omitempty"`
 
+	// One or more target groups. For Network Load Balancers, you can specify a
+	// single target group.
 	TargetGroups []*CustomTargetGroupTuple `json:"targetGroups,omitempty"`
 }
 
+// CustomAction includes custom fields for an action.
+//
+// Each rule must include exactly one of the following types of actions: forward,
+// fixed-response, or redirect, and it must be the last action to be performed.
 type CustomAction struct {
 	// Request parameters to use when integrating with Amazon Cognito to authenticate
 	// users.
@@ -33,6 +44,8 @@ type CustomAction struct {
 	// Information about a forward action.
 	ForwardConfig *CustomForwardActionConfig `json:"forwardConfig,omitempty"`
 
+	// The order for the action. This value is required for rules with multiple
+	// actions. The action with the lowest value for order is performed first.
 	Order *int64 `json:"order,omitempty"`
 	// Information about a redirect action.
 	//
@@ -71,7 +84,9 @@ type CustomAction struct {
 	// +optional
 	TargetGroupARNSelector *xpv1.Selector `json:"targetGroupARNSelector,omitempty"`
 
-	Type *string `json:"actionType,omitempty"` // renamed json tag from "type_"
+	// The type of action.
+	// +kubebuilder:validation:Required
+	Type *string `json:"actionType"` // renamed json tag from "type_"
 }
 
 // CustomListenerParameters includes the custom fields of Listener.

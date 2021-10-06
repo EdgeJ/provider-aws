@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.6.2
   creationTimestamp: null
   name: listeners.elasticloadbalancingv2.aws.crossplane.io
 spec:
@@ -85,8 +85,13 @@ spec:
                   defaultActions:
                     description: The actions for the default rule.
                     items:
+                      description: "CustomAction includes custom fields for an action.
+                        \n Each rule must include exactly one of the following types
+                        of actions: forward, fixed-response, or redirect, and it must
+                        be the last action to be performed."
                       properties:
                         actionType:
+                          description: The type of action.
                           type: string
                         authenticateCognitoConfig:
                           description: Request parameters to use when integrating
@@ -170,7 +175,12 @@ spec:
                                   type: boolean
                               type: object
                             targetGroups:
+                              description: One or more target groups. For Network
+                                Load Balancers, you can specify a single target group.
                               items:
+                                description: CustomTargetGroupTuple includes custom
+                                  fields about target groups. Only used with ForwardActionConfig
+                                  to route to multiple target groups.
                                 properties:
                                   targetGroupARN:
                                     type: string
@@ -207,6 +217,9 @@ spec:
                               type: array
                           type: object
                         order:
+                          description: The order for the action. This value is required
+                            for rules with multiple actions. The action with the lowest
+                            value for order is performed first.
                           format: int64
                           type: integer
                         redirectConfig:
@@ -266,6 +279,8 @@ spec:
                                 labels is selected.
                               type: object
                           type: object
+                      required:
+                      - actionType
                       type: object
                     type: array
                   loadBalancerARN:
