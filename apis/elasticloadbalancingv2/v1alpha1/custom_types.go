@@ -96,7 +96,7 @@ type CustomListenerParameters struct {
 	DefaultActions []*CustomAction `json:"defaultActions"`
 
 	// The Amazon Resource Name (ARN) of the load balancer.
-	// +immutable
+	// +optional
 	LoadBalancerARN *string `json:"loadBalancerARN,omitempty"`
 
 	// Ref to loadbalancer ARN
