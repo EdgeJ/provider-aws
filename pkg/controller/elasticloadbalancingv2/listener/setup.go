@@ -41,34 +41,20 @@ func SetupListener(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimiter,
 		Complete(managed.NewReconciler(mgr,
 			resource.ManagedKind(svcapitypes.ListenerGroupVersionKind),
 			managed.WithExternalConnecter(&connector{kube: mgr.GetClient(), opts: opts}),
+			managed.WithInitializers(),
 			managed.WithPollInterval(poll),
 			managed.WithLogger(l.WithValues("controller", name)),
 			managed.WithRecorder(event.NewAPIRecorder(mgr.GetEventRecorderFor(name)))))
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.Listener, obj *svcsdk.DescribeListenersInput) error {
-	// Until the listener ARN is set after creation, we can't use it for
-	// searching. Instead use the loadbalancer ARN to allow the API call to
-	// pass and handle the false positive in postObserve.
-	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
-		obj.LoadBalancerArn = cr.Spec.ForProvider.LoadBalancerARN
-	} else {
-		obj.ListenerArns = []*string{aws.String(meta.GetExternalName(cr))}
-	}
+	obj.LoadBalancerArn = cr.Spec.ForProvider.LoadBalancerARN
 	return nil
 }
 
 func postObserve(_ context.Context, cr *svcapitypes.Listener, _ *svcsdk.DescribeListenersOutput, obs managed.ExternalObservation, err error) (managed.ExternalObservation, error) {
 	if err != nil {
 		return managed.ExternalObservation{}, err
-	}
-	// if the external-name is still set to the object name, we haven't
-	// actually created the resource. This helps get around the fact that we
-	// don't yet have a valid ARN to search with until we have created the
-	// resource itself.
-	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
-		obs.ResourceExists = false
-		return obs, nil
 	}
 	cr.SetConditions(xpv1.Available())
 	return obs, nil
@@ -238,8 +224,7 @@ func generateDefaultActions(cr *svcapitypes.Listener) []*svcsdk.Action { //nolin
 }
 
 func preCreate(_ context.Context, cr *svcapitypes.Listener, obs *svcsdk.CreateListenerInput) error {
-	dActions := generateDefaultActions(cr)
-	obs.DefaultActions = dActions
+	obs.DefaultActions = generateDefaultActions(cr)
 	obs.LoadBalancerArn = cr.Spec.ForProvider.LoadBalancerARN
 	return nil
 }

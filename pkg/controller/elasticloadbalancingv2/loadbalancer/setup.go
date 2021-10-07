@@ -40,17 +40,14 @@ func SetupLoadBalancer(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimi
 		Complete(managed.NewReconciler(mgr,
 			resource.ManagedKind(svcapitypes.LoadBalancerGroupVersionKind),
 			managed.WithExternalConnecter(&connector{kube: mgr.GetClient(), opts: opts}),
+			managed.WithInitializers(),
 			managed.WithPollInterval(poll),
 			managed.WithLogger(l.WithValues("controller", name)),
 			managed.WithRecorder(event.NewAPIRecorder(mgr.GetEventRecorderFor(name)))))
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.LoadBalancer, obj *svcsdk.DescribeLoadBalancersInput) error {
-	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
-		obj.Names = []*string{aws.String(meta.GetExternalName(cr))}
-	} else {
-		obj.LoadBalancerArns = []*string{aws.String(meta.GetExternalName(cr))}
-	}
+	obj.LoadBalancerArns = []*string{aws.String(meta.GetExternalName(cr))}
 	return nil
 }
 

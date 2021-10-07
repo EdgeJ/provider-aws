@@ -41,17 +41,14 @@ func SetupTargetGroup(mgr ctrl.Manager, l logging.Logger, rl workqueue.RateLimit
 		Complete(managed.NewReconciler(mgr,
 			resource.ManagedKind(svcapitypes.TargetGroupGroupVersionKind),
 			managed.WithExternalConnecter(&connector{kube: mgr.GetClient(), opts: opts}),
+			managed.WithInitializers(),
 			managed.WithPollInterval(poll),
 			managed.WithLogger(l.WithValues("controller", name)),
 			managed.WithRecorder(event.NewAPIRecorder(mgr.GetEventRecorderFor(name)))))
 }
 
 func preObserve(_ context.Context, cr *svcapitypes.TargetGroup, obj *svcsdk.DescribeTargetGroupsInput) error {
-	if meta.GetExternalName(cr) == cr.ObjectMeta.Name {
-		obj.Names = []*string{aws.String(meta.GetExternalName(cr))}
-	} else {
-		obj.TargetGroupArns = []*string{aws.String(meta.GetExternalName(cr))}
-	}
+	obj.TargetGroupArns = []*string{aws.String(meta.GetExternalName(cr))}
 	return nil
 }
 
